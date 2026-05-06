@@ -21,7 +21,7 @@ export function ArtworkCard({ artwork, index = 0 }: ArtworkCardProps) {
         <div className="relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-800/60 transition-all duration-500 hover:border-cyan-500/30 hover:shadow-[0_0_30px_-5px_rgba(34,211,238,0.15)]">
           <div className="relative aspect-[3/4]">
             <Image
-              src={artwork.thumbnailUrl}
+              src={artwork.imageUrl}
               alt={artwork.title}
               fill
               className="object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:rotate-[0.5deg]"

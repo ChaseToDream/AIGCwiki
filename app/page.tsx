@@ -30,19 +30,7 @@ export default function HomePage() {
             探索精选 AI 艺术作品，获取完整生成参数与灵感
           </p>
 
-          <div className="mt-10 flex items-center justify-center gap-4">
-            <div className="flex -space-x-3">
-              {[1, 2, 3, 4].map((i) => (
-                <div
-                  key={i}
-                  className="w-10 h-10 rounded-full border-2 border-zinc-900 bg-gradient-to-br from-zinc-700 to-zinc-600"
-                />
-              ))}
-            </div>
-            <span className="text-zinc-500 text-sm">
-              <span className="text-zinc-300 font-semibold">{artworks.length}</span> 件作品收录
-            </span>
-          </div>
+
         </div>
       </section>
 

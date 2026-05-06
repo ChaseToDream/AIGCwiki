@@ -14,7 +14,7 @@ export {
   removeArtwork,
   updateArtwork,
   saveArtworks,
-  getImagePaths,
+  getImagePath,
   slugify,
 } from './artworkService';
 

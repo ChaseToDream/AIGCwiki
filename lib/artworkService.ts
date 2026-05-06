@@ -135,14 +135,8 @@ export async function saveArtworks(list: Artwork[]): Promise<void> {
   cachedArtworks = list;
 }
 
-export function getImagePaths(slug: string): {
-  imageUrl: string;
-  thumbnailUrl: string;
-} {
-  return {
-    imageUrl: `/images/artworks/${slug}.jpg`,
-    thumbnailUrl: `/images/artworks/${slug}-thumb.jpg`,
-  };
+export function getImagePath(slug: string): string {
+  return `/images/artworks/${slug}.jpg`;
 }
 
 export function slugify(title: string): string {

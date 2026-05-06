@@ -101,7 +101,6 @@ async function cmdAdd(title) {
     title,
     description: description || undefined,
     imageUrl: `/images/artworks/${slug}.jpg`,
-    thumbnailUrl: `/images/artworks/${slug}-thumb.jpg`,
     parameters: {
       model,
       sampler,
@@ -125,7 +124,6 @@ async function cmdAdd(title) {
 
   console.log(`\n✓ 已添加作品 [${newArtwork.id}] ${newArtwork.title}`);
   console.log(`  图片路径: ${newArtwork.imageUrl}`);
-  console.log(`  缩略图路径: ${newArtwork.thumbnailUrl}`);
   console.log(`  提示: 请将对应的图片文件放入 public/images/artworks/ 目录`);
 }
 

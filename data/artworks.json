@@ -1,3 +1,88 @@
 {
-  "artworks": []
+  "artworks": [
+    {
+      "id": "1",
+      "title": "东方淮竹1",
+      "description": "东方淮竹",
+      "imageUrl": "/images/artworks/东方淮竹1.jpg",
+      "parameters": {
+        "model": "SDXL 1.0",
+        "sampler": "DPM++ 2M Karras",
+        "steps": 30,
+        "cfgScale": 7,
+        "seed": 836712226,
+        "width": 1024,
+        "height": 1024,
+        "positivePrompt": ""
+      },
+      "style": ["未分类"],
+      "subject": ["未分类"],
+      "tags": [],
+      "createdAt": "2026-05-06T08:27:54.420Z",
+      "updatedAt": "2026-05-06T08:27:54.420Z"
+    },
+    {
+      "id": "2",
+      "title": "东方淮竹2",
+      "description": "东方淮竹2",
+      "imageUrl": "/images/artworks/东方淮竹2.jpg",
+      "parameters": {
+        "model": "SDXL 1.0",
+        "sampler": "DPM++ 2M Karras",
+        "steps": 30,
+        "cfgScale": 7,
+        "seed": 764821557,
+        "width": 1024,
+        "height": 1024,
+        "positivePrompt": ""
+      },
+      "style": ["未分类"],
+      "subject": ["未分类"],
+      "tags": [],
+      "createdAt": "2026-05-06T08:30:40.641Z",
+      "updatedAt": "2026-05-06T08:30:40.641Z"
+    },
+    {
+      "id": "3",
+      "title": "东方淮竹3",
+      "description": "东方淮竹3",
+      "imageUrl": "/images/artworks/东方淮竹3.jpg",
+      "parameters": {
+        "model": "SDXL 1.0",
+        "sampler": "DPM++ 2M Karras",
+        "steps": 30,
+        "cfgScale": 7,
+        "seed": 950316055,
+        "width": 1024,
+        "height": 1024,
+        "positivePrompt": ""
+      },
+      "style": ["未分类"],
+      "subject": ["未分类"],
+      "tags": [],
+      "createdAt": "2026-05-06T08:30:50.296Z",
+      "updatedAt": "2026-05-06T08:30:50.297Z"
+    },
+    {
+      "id": "4",
+      "title": "东方淮竹4",
+      "description": "东方淮竹4",
+      "imageUrl": "/images/artworks/东方淮竹4.jpg",
+      "parameters": {
+        "model": "SDXL 1.0",
+        "sampler": "DPM++ 2M Karras",
+        "steps": 30,
+        "cfgScale": 7,
+        "seed": 903441683,
+        "width": 1024,
+        "height": 1024,
+        "positivePrompt": ""
+      },
+      "style": ["未分类"],
+      "subject": ["未分类"],
+      "tags": [],
+      "createdAt": "2026-05-06T08:31:00.596Z",
+      "updatedAt": "2026-05-06T08:31:00.597Z"
+    }
+  ]
 }

@@ -1,31 +1,14 @@
-export interface ImageFileInfo {
-  filename: string;
-  path: string;
-  type: 'main' | 'thumbnail';
-  exists: boolean;
-}
-
 export const IMAGE_DIR = 'public/images/artworks';
 export const IMAGE_PREFIX = '/images/artworks/';
 export const SUPPORTED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.avif'];
-export const THUMBNAIL_SUFFIX = '-thumb';
-export const THUMBNAIL_SIZE = { width: 400, height: 600 };
-export const FULL_SIZE = { width: 1200, height: 1800 };
+export const RECOMMENDED_SIZE = { width: 1200, height: 1800 };
 
-export function getMainImageName(slug: string): string {
+export function getImageName(slug: string): string {
   return `${slug}.jpg`;
 }
 
-export function getThumbnailImageName(slug: string): string {
-  return `${slug}${THUMBNAIL_SUFFIX}.jpg`;
-}
-
 export function getImageUrl(slug: string): string {
-  return `${IMAGE_PREFIX}${getMainImageName(slug)}`;
-}
-
-export function getThumbnailUrl(slug: string): string {
-  return `${IMAGE_PREFIX}${getThumbnailImageName(slug)}`;
+  return `${IMAGE_PREFIX}${getImageName(slug)}`;
 }
 
 export function isImageExist(filename: string): boolean {
@@ -45,10 +28,4 @@ export function validateImageFile(filename: string): string | null {
     return `不支持的图片格式: ${ext}，支持: ${SUPPORTED_EXTENSIONS.join(', ')}`;
   }
   return null;
-}
-
-export function getImageSizeRecommendation(
-  isThumbnail: boolean
-): { width: number; height: number } {
-  return isThumbnail ? THUMBNAIL_SIZE : FULL_SIZE;
 }

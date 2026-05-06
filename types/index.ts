@@ -15,7 +15,6 @@ export interface Artwork {
   title: string;
   description?: string;
   imageUrl: string;
-  thumbnailUrl: string;
   parameters: ArtworkParameters;
   style: string[];
   subject: string[];
