@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Gallery - AI绘画作品展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --background: #09090b;
+            --foreground: #fafafa;
+            --card: #18181b;
+            --card-foreground: #fafafa;
+            --primary: #6366f1;
+            --primary-foreground: #fafafa;
+            --secondary: #27272a;
+            --secondary-foreground: #fafafa;
+            --muted: #27272a;
+            --muted-foreground: #a1a1aa;
+            --accent: #27272a;
+            --accent-foreground: #fafafa;
+            --border: #27272a;
+            --input: #27272a;
+            --ring: #6366f1;
+            --radius: 0.5rem;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-track {
+            background: #18181b;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 4px;
+        }
+
+        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
+            background: #52525b;
+        }
+
+        .artwork-card {
+            transition: transform 0.3s ease;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .image-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .artwork-card:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .parameter-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .parameter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen scrollbar-custom">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2" onclick="showHome()">
+                <i class="fas fa-palette text-indigo-500 text-2xl"></i>
+                <span class="text-xl font-bold text-white">AI Gallery</span>
+            </a>
+            <div class="flex-1 max-w-md mx-8">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"></i>
+                    <input type="text" placeholder="搜索作品..." 
+                        class="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+            </div>
+            <nav class="hidden sm:flex items-center gap-6">
+                <a href="#" class="text-zinc-300 hover:text-white transition-colors" onclick="showHome()">首页</a>
+                <a href="#" class="text-zinc-300 hover:text-white transition-colors">分类</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section class="py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto text-center">
+                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
+                    AI 绘画作品展示
+                </h1>
+                <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
+                    探索精选AI艺术作品，获取生成参数与灵感
+                </p>
+            </div>
+        </section>
+
+        <!-- Artwork Grid -->
+        <section class="px-4 sm:px-6 lg:px-8 pb-16">
+            <div class="max-w-7xl mx-auto">
+                <div id="artwork-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    <!-- Artworks will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Detail View (Hidden by default) -->
+    <main id="detail-content" class="hidden">
+        <!-- Navigation -->
+        <div class="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+                <button onclick="showHome()" class="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>返回</span>
+                </button>
+                <h1 id="detail-title" class="ml-4 text-white font-semibold truncate"></h1>
+            </div>
+        </div>
+
+        <!-- Detail Content -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Image Display -->
+                <div class="lg:col-span-2">
+                    <div class="relative rounded-lg overflow-hidden bg-zinc-900">
+                        <img id="detail-image" src="" alt="" class="w-full h-auto">
+                    </div>
+                    <div id="detail-description" class="mt-6 hidden">
+                        <h2 class="text-white font-semibold mb-2">作品描述</h2>
+                        <p class="text-zinc-400"></p>
+                    </div>
+                </div>
+
+                <!-- Parameter Panel -->
+                <div class="lg:col-span-1">
+                    <div class="bg-zinc-800 rounded-lg p-6 space-y-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-4">生成参数</h3>
+                            <div id="parameter-grid" class="parameter-grid">
+                                <!-- Parameters will be loaded here -->
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-white font-medium">正向提示词</h4>
+                                <button onclick="copyText('positive-prompt')" class="p-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 transition-colors">
+                                    <i class="fas fa-copy text-zinc-400"></i>
+                                </button>
+                            </div>
+                            <div class="bg-zinc-900 rounded-lg p-3 max-h-40 overflow-y-auto">
+                                <p id="positive-prompt" class="text-zinc-300 text-sm leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <div id="negative-prompt-section">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-white font-medium">反向提示词</h4>
+                                <button onclick="copyText('negative-prompt')" class="p-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 transition-colors">
+                                    <i class="fas fa-copy text-zinc-400"></i>
+                                </button>
+                            </div>
+                            <div class="bg-zinc-900 rounded-lg p-3 max-h-32 overflow-y-auto">
+                                <p id="negative-prompt" class="text-zinc-400 text-sm leading-relaxed"></p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-white font-medium mb-3">标签</h4>
+                            <div id="tags-container" class="flex flex-wrap gap-2">
+                                <!-- Tags will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-zinc-950 border-t border-zinc-800 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p class="text-zinc-400 text-sm">AI Gallery - AI绘画作品展示平台</p>
+                <p class="text-zinc-500 text-sm">探索AI艺术的无限可能</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Sample data
+        const artworks = [
+            {
+                id: "1",
+                title: "赛博朋克城市夜景",
+                description: "未来城市的霓虹灯光，rain-soaked streets reflecting neon signs",
+                imageUrl: "https://images.unsplash.com/photo-1515630278258-407f66498911?w=800&h=600&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1515630278258-407f66498911?w=400&h=300&fit=crop",
+                parameters: {
+                    model: "SDXL 1.0",
+                    sampler: "DPM++ 2M Karras",
+                    steps: 30,
+                    cfgScale: 7.5,
+                    seed: 123456789,
+                    width: 1024,
+                    height: 1024,
+                    positivePrompt: "masterpiece, best quality, cyberpunk city, neon lights, rain, futuristic, highly detailed, 8k uhd, night scene, flying cars, holographic advertisements, towering skyscrapers, reflective wet streets, volumetric lighting",
+                    negativePrompt: "low quality, blurry, worst quality, bad anatomy, deformed, ugly, duplicate, watermark, signature, text, logo"
+                },
+                style: ["赛博朋克", "科幻"],
+                subject: ["风景", "建筑"],
+                tags: ["夜景", "霓虹", "未来", "城市", "雨夜"]
+            },
+            {
+                id: "2",
+                title: "梦幻森林精灵",
+                description: "居住在古老森林中的神秘精灵，surrounded by glowing fireflies",
+                imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&h=600&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=300&fit=crop",
+                parameters: {
+                    model: "Midjourney v6",
+                    sampler: "Euler a",
+                    steps: 25,
+                    cfgScale: 8,
+                    seed: 987654321,
+                    width: 1024,
+                    height: 1536,
+                    positivePrompt: "ethereal forest elf, pointed ears, flowing silver hair, luminous eyes, wearing leaf garments, magical aura, surrounded by fireflies, ancient trees, moss covered ground, soft volumetric lighting, fantasy art, highly detailed, 8k, masterpiece",
+                    negativePrompt: "modern clothes, urban background, low quality, blurry, extra limbs, bad anatomy"
+                },
+                style: ["奇幻", "写实"],
+                subject: ["人物"],
+                tags: ["精灵", "森林", "魔法", "幻想"]
+            },
+            {
+                id: "3",
+                title: "蒸汽朋克机械龙",
+                description: "由齿轮和蒸汽驱动的机械巨龙",
+                imageUrl: "https://images.unsplash.com/photo-1577493340887-b7bfff550145?w=800&h=600&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1577493340887-b7bfff550145?w=400&h=300&fit=crop",
+                parameters: {
+                    model: "SDXL 1.0",
+                    sampler: "DPM++ SDE Karras",
+                    steps: 35,
+                    cfgScale: 7,
+                    seed: 555666777,
+                    width: 1024,
+                    height: 1024,
+                    positivePrompt: "steampunk mechanical dragon, brass and copper gears, steam vents, intricate clockwork, flying in cloudy sky, industrial design, highly detailed, 8k uhd, dramatic lighting, metallic textures, Victorian era aesthetics",
+                    negativePrompt: "low quality, blurry, organic dragon, modern technology, plastic, cartoon style"
+                },
+                style: ["蒸汽朋克", "科幻"],
+                subject: ["动物"],
+                tags: ["机械", "龙", "齿轮", "蒸汽"]
+            },
+            {
+                id: "4",
+                title: "水墨山水意境",
+                description: "传统中国水墨画风格的山水风景",
+                imageUrl: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&h=400&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=200&fit=crop",
+                parameters: {
+                    model: "Stable Diffusion 1.5",
+                    sampler: "Euler a",
+                    steps: 20,
+                    cfgScale: 6,
+                    seed: 111222333,
+                    width: 1024,
+                    height: 512,
+                    positivePrompt: "traditional Chinese ink wash painting, mountains and rivers, misty clouds, pine trees, solitary boat, minimalist composition, poetic atmosphere, black and white with subtle gray tones, masterful brushwork, Song dynasty style",
+                    negativePrompt: "colorful, modern elements, photorealistic, low quality, blurry, Western architecture"
+                },
+                style: ["水墨", "传统"],
+                subject: ["风景"],
+                tags: ["山水", "水墨", "中国风", "意境"]
+            },
+            {
+                id: "5",
+                title: "未来机甲战士",
+                description: "身穿高科技装甲的未来战士",
+                imageUrl: "https://images.unsplash.com/photo-1614726365723-49cfae927846?w=800&h=600&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1614726365723-49cfae927846?w=400&h=300&fit=crop",
+                parameters: {
+                    model: "SDXL 1.0",
+                    sampler: "DPM++ 2M Karras",
+                    steps: 40,
+                    cfgScale: 8.5,
+                    seed: 444555666,
+                    width: 1024,
+                    height: 1536,
+                    positivePrompt: "futuristic mecha warrior, advanced power armor, glowing energy core, dynamic pose, battlefield background, explosions, rain, dramatic lighting, highly detailed mechanical parts, 8k uhd, cinematic composition, sci-fi concept art",
+                    negativePrompt: "low quality, blurry, cartoon, anime style, deformed, bad anatomy, extra limbs"
+                },
+                style: ["科幻", "写实"],
+                subject: ["人物"],
+                tags: ["机甲", "战士", "未来", "装甲"]
+            },
+            {
+                id: "6",
+                title: "印象派花园",
+                description: "莫奈风格的花园景色，光影斑驳",
+                imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa2f44c946?w=800&h=600&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1490750967868-88aa2f44c946?w=400&h=300&fit=crop",
+                parameters: {
+                    model: "Midjourney v6",
+                    sampler: "DPM++ 2M",
+                    steps: 28,
+                    cfgScale: 7,
+                    seed: 777888999,
+                    width: 1024,
+                    height: 1024,
+                    positivePrompt: "impressionist garden painting, monet style, water lilies pond, Japanese bridge, vibrant flowers, dappled sunlight, soft brushstrokes, plein air painting, pastel colors, serene atmosphere, masterpiece, museum quality",
+                    negativePrompt: "photorealistic, sharp details, modern elements, low quality, blurry, dark colors"
+                },
+                style: ["印象派", "油画"],
+                subject: ["风景"],
+                tags: ["花园", "莫奈", "印象派", "光影"]
+            }
+        ];
+
+        // Render artwork grid
+        function renderArtworkGrid() {
+            const grid = document.getElementById('artwork-grid');
+            grid.innerHTML = artworks.map((artwork, index) => `
+                <div class="artwork-card cursor-pointer" onclick="showDetail('${artwork.id}')" style="animation: fadeInUp 0.5s ease ${index * 0.1}s both;">
+                    <div class="relative overflow-hidden rounded-lg bg-zinc-800 aspect-[3/4]">
+                        <img src="${artwork.thumbnailUrl}" alt="${artwork.title}" 
+                            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
+                        <div class="image-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
+                            <div class="absolute bottom-0 left-0 right-0 p-4">
+                                <h3 class="text-white font-semibold truncate">${artwork.title}</h3>
+                                <p class="text-zinc-300 text-sm mt-1">${artwork.parameters.model}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show detail view
+        function showDetail(id) {
+            const artwork = artworks.find(a => a.id === id);
+            if (!artwork) return;
+
+            document.getElementById('main-content').classList.add('hidden');
+            document.getElementById('detail-content').classList.remove('hidden');
+
+            document.getElementById('detail-title').textContent = artwork.title;
+            document.getElementById('detail-image').src = artwork.imageUrl;
+            document.getElementById('detail-image').alt = artwork.title;
+
+            if (artwork.description) {
+                const descSection = document.getElementById('detail-description');
+                descSection.classList.remove('hidden');
+                descSection.querySelector('p').textContent = artwork.description;
+            }
+
+            // Render parameters
+            const paramItems = [
+                { label: '模型', value: artwork.parameters.model },
+                { label: '采样器', value: artwork.parameters.sampler || '-' },
+                { label: '步数', value: artwork.parameters.steps.toString() },
+                { label: 'CFG Scale', value: artwork.parameters.cfgScale.toString() },
+                { label: '种子', value: artwork.parameters.seed.toString() },
+                { label: '尺寸', value: `${artwork.parameters.width} x ${artwork.parameters.height}` },
+            ];
+
+            document.getElementById('parameter-grid').innerHTML = paramItems.map(item => `
+                <div class="bg-zinc-700/50 rounded-lg p-3">
+                    <span class="text-zinc-400 text-sm">${item.label}</span>
+                    <p class="text-white font-medium mt-1">${item.value}</p>
+                </div>
+            `).join('');
+
+            document.getElementById('positive-prompt').textContent = artwork.parameters.positivePrompt;
+            
+            if (artwork.parameters.negativePrompt) {
+                document.getElementById('negative-prompt').textContent = artwork.parameters.negativePrompt;
+                document.getElementById('negative-prompt-section').classList.remove('hidden');
+            } else {
+                document.getElementById('negative-prompt-section').classList.add('hidden');
+            }
+
+            document.getElementById('tags-container').innerHTML = artwork.tags.map(tag => `
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-zinc-700 text-zinc-300 hover:bg-zinc-600 transition-colors cursor-pointer">
+                    #${tag}
+                </span>
+            `).join('');
+
+            window.scrollTo(0, 0);
+        }
+
+        // Show home view
+        function showHome() {
+            document.getElementById('detail-content').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        // Copy text function
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                // Show feedback
+                const button = event.target.closest('button');
+                const icon = button.querySelector('i');
+                icon.className = 'fas fa-check text-green-400';
+                setTimeout(() => {
+                    icon.className = 'fas fa-copy text-zinc-400';
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+            });
+        }
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', renderArtworkGrid);
+    </script>
+</body>
+</html>

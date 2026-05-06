@@ -1,0 +1,142 @@
+{
+  "artworks": [
+    {
+      "id": "1",
+      "title": "赛博朋克城市夜景",
+      "description": "未来城市的霓虹灯光， rain-soaked streets reflecting neon signs",
+      "imageUrl": "/images/artworks/cyberpunk-city.jpg",
+      "thumbnailUrl": "/images/artworks/cyberpunk-city-thumb.jpg",
+      "parameters": {
+        "model": "SDXL 1.0",
+        "sampler": "DPM++ 2M Karras",
+        "steps": 30,
+        "cfgScale": 7.5,
+        "seed": 123456789,
+        "width": 1024,
+        "height": 1024,
+        "positivePrompt": "masterpiece, best quality, cyberpunk city, neon lights, rain, futuristic, highly detailed, 8k uhd, night scene, flying cars, holographic advertisements, towering skyscrapers, reflective wet streets, volumetric lighting",
+        "negativePrompt": "low quality, blurry, worst quality, bad anatomy, deformed, ugly, duplicate, watermark, signature, text, logo"
+      },
+      "style": ["赛博朋克", "科幻"],
+      "subject": ["风景", "建筑"],
+      "tags": ["夜景", "霓虹", "未来", "城市", "雨夜"],
+      "createdAt": "2024-01-15T10:00:00Z",
+      "updatedAt": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "title": "梦幻森林精灵",
+      "description": "居住在古老森林中的神秘精灵， surrounded by glowing fireflies",
+      "imageUrl": "/images/artworks/forest-elf.jpg",
+      "thumbnailUrl": "/images/artworks/forest-elf-thumb.jpg",
+      "parameters": {
+        "model": "Midjourney v6",
+        "sampler": "Euler a",
+        "steps": 25,
+        "cfgScale": 8,
+        "seed": 987654321,
+        "width": 1024,
+        "height": 1536,
+        "positivePrompt": "ethereal forest elf, pointed ears, flowing silver hair, luminous eyes, wearing leaf garments, magical aura, surrounded by fireflies, ancient trees, moss covered ground, soft volumetric lighting, fantasy art, highly detailed, 8k, masterpiece",
+        "negativePrompt": "modern clothes, urban background, low quality, blurry, extra limbs, bad anatomy"
+      },
+      "style": ["奇幻", "写实"],
+      "subject": ["人物"],
+      "tags": ["精灵", "森林", "魔法", "幻想"],
+      "createdAt": "2024-01-16T14:30:00Z",
+      "updatedAt": "2024-01-16T14:30:00Z"
+    },
+    {
+      "id": "3",
+      "title": "蒸汽朋克机械龙",
+      "description": "由齿轮和蒸汽驱动的机械巨龙",
+      "imageUrl": "/images/artworks/steampunk-dragon.jpg",
+      "thumbnailUrl": "/images/artworks/steampunk-dragon-thumb.jpg",
+      "parameters": {
+        "model": "SDXL 1.0",
+        "sampler": "DPM++ SDE Karras",
+        "steps": 35,
+        "cfgScale": 7,
+        "seed": 555666777,
+        "width": 1024,
+        "height": 1024,
+        "positivePrompt": "steampunk mechanical dragon, brass and copper gears, steam vents, intricate clockwork, flying in cloudy sky, industrial design, highly detailed, 8k uhd, dramatic lighting, metallic textures, Victorian era aesthetics",
+        "negativePrompt": "low quality, blurry, organic dragon, modern technology, plastic, cartoon style"
+      },
+      "style": ["蒸汽朋克", "科幻"],
+      "subject": ["动物"],
+      "tags": ["机械", "龙", "齿轮", "蒸汽"],
+      "createdAt": "2024-01-17T09:15:00Z",
+      "updatedAt": "2024-01-17T09:15:00Z"
+    },
+    {
+      "id": "4",
+      "title": "水墨山水意境",
+      "description": "传统中国水墨画风格的山水风景",
+      "imageUrl": "/images/artworks/ink-landscape.jpg",
+      "thumbnailUrl": "/images/artworks/ink-landscape-thumb.jpg",
+      "parameters": {
+        "model": "Stable Diffusion 1.5",
+        "sampler": "Euler a",
+        "steps": 20,
+        "cfgScale": 6,
+        "seed": 111222333,
+        "width": 1024,
+        "height": 512,
+        "positivePrompt": "traditional Chinese ink wash painting, mountains and rivers, misty clouds, pine trees, solitary boat, minimalist composition, poetic atmosphere, black and white with subtle gray tones, masterful brushwork, Song dynasty style",
+        "negativePrompt": "colorful, modern elements, photorealistic, low quality, blurry, Western architecture"
+      },
+      "style": ["水墨", "传统"],
+      "subject": ["风景"],
+      "tags": ["山水", "水墨", "中国风", "意境"],
+      "createdAt": "2024-01-18T16:45:00Z",
+      "updatedAt": "2024-01-18T16:45:00Z"
+    },
+    {
+      "id": "5",
+      "title": "未来机甲战士",
+      "description": "身穿高科技装甲的未来战士",
+      "imageUrl": "/images/artworks/mecha-warrior.jpg",
+      "thumbnailUrl": "/images/artworks/mecha-warrior-thumb.jpg",
+      "parameters": {
+        "model": "SDXL 1.0",
+        "sampler": "DPM++ 2M Karras",
+        "steps": 40,
+        "cfgScale": 8.5,
+        "seed": 444555666,
+        "width": 1024,
+        "height": 1536,
+        "positivePrompt": "futuristic mecha warrior, advanced power armor, glowing energy core, dynamic pose, battlefield background, explosions, rain, dramatic lighting, highly detailed mechanical parts, 8k uhd, cinematic composition, sci-fi concept art",
+        "negativePrompt": "low quality, blurry, cartoon, anime style, deformed, bad anatomy, extra limbs"
+      },
+      "style": ["科幻", "写实"],
+      "subject": ["人物"],
+      "tags": ["机甲", "战士", "未来", "装甲"],
+      "createdAt": "2024-01-19T11:20:00Z",
+      "updatedAt": "2024-01-19T11:20:00Z"
+    },
+    {
+      "id": "6",
+      "title": "印象派花园",
+      "description": "莫奈风格的花园景色，光影斑驳",
+      "imageUrl": "/images/artworks/impressionist-garden.jpg",
+      "thumbnailUrl": "/images/artworks/impressionist-garden-thumb.jpg",
+      "parameters": {
+        "model": "Midjourney v6",
+        "sampler": "DPM++ 2M",
+        "steps": 28,
+        "cfgScale": 7,
+        "seed": 777888999,
+        "width": 1024,
+        "height": 1024,
+        "positivePrompt": "impressionist garden painting, monet style, water lilies pond, Japanese bridge, vibrant flowers, dappled sunlight, soft brushstrokes, plein air painting, pastel colors, serene atmosphere, masterpiece, museum quality",
+        "negativePrompt": "photorealistic, sharp details, modern elements, low quality, blurry, dark colors"
+      },
+      "style": ["印象派", "油画"],
+      "subject": ["风景"],
+      "tags": ["花园", "莫奈", "印象派", "光影"],
+      "createdAt": "2024-01-20T08:00:00Z",
+      "updatedAt": "2024-01-20T08:00:00Z"
+    }
+  ]
+}
