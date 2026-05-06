@@ -25,9 +25,9 @@ export function LazyImage({
   const [isLoaded, setIsLoaded] = useState(false);
 
   return (
-    <div className={`relative ${fill ? 'w-full h-full' : ''}`}>
+    <div className={`relative overflow-hidden ${fill ? 'w-full h-full' : ''}`}>
       {!isLoaded && (
-        <div className="absolute inset-0 bg-zinc-800 animate-pulse rounded-lg" />
+        <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 via-zinc-800/80 to-zinc-900 animate-shimmer rounded-[inherit]" />
       )}
       <Image
         src={src}
@@ -35,8 +35,8 @@ export function LazyImage({
         fill={fill}
         width={!fill ? width : undefined}
         height={!fill ? height : undefined}
-        className={`${className} transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
+        className={`${className} transition-all duration-700 ${
+          isLoaded ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-105 blur-sm'
         }`}
         onLoad={() => setIsLoaded(true)}
         priority={priority}

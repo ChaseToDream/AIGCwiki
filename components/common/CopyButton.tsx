@@ -23,13 +23,13 @@ export function CopyButton({ text }: CopyButtonProps) {
   return (
     <button
       onClick={handleCopy}
-      className="p-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 transition-colors"
+      className="relative p-2 rounded-lg bg-zinc-800/80 border border-zinc-700/50 hover:border-cyan-500/50 hover:bg-zinc-700/80 transition-all duration-300 group"
       title="复制"
     >
       {copied ? (
-        <Check className="w-4 h-4 text-green-400" />
+        <Check className="w-4 h-4 text-cyan-400 transition-transform duration-300 scale-110" />
       ) : (
-        <Copy className="w-4 h-4 text-zinc-400" />
+        <Copy className="w-4 h-4 text-zinc-400 group-hover:text-cyan-300 transition-colors duration-300" />
       )}
     </button>
   );

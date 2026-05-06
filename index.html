@@ -3,221 +3,1418 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Gallery - AI绘画作品展示</title>
+    <title>AI Gallery - 数字画廊</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ============================================
+           现代化色彩系统 - 精致未来主义调色板
+           ============================================ */
         :root {
-            --background: #09090b;
-            --foreground: #fafafa;
-            --card: #18181b;
-            --card-foreground: #fafafa;
-            --primary: #6366f1;
-            --primary-foreground: #fafafa;
-            --secondary: #27272a;
-            --secondary-foreground: #fafafa;
-            --muted: #27272a;
-            --muted-foreground: #a1a1aa;
-            --accent: #27272a;
-            --accent-foreground: #fafafa;
-            --border: #27272a;
-            --input: #27272a;
-            --ring: #6366f1;
-            --radius: 0.5rem;
+            /* 主色调：深邃紫罗兰到青色渐变 */
+            --gradient-start: #6366f1;
+            --gradient-mid: #8b5cf6;
+            --gradient-end: #06b6d4;
+            
+            /* 背景层次 */
+            --bg-deep: #030712;
+            --bg-base: #0a0a0f;
+            --bg-elevated: #111118;
+            --bg-card: #16161d;
+            --bg-card-hover: #1c1c26;
+            
+            /* 文字层级 */
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --text-accent: #c4b5fd;
+            
+            /* 边框与分隔 */
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-light: rgba(255, 255, 255, 0.1);
+            --border-glow: rgba(139, 92, 246, 0.3);
+            
+            /* 特效颜色 */
+            --glow-primary: rgba(139, 92, 246, 0.4);
+            --glow-secondary: rgba(6, 182, 212, 0.3);
+            --glow-accent: rgba(168, 85, 247, 0.2);
+            
+            /* 阴影系统 */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 30px var(--glow-primary);
+            
+            /* 圆角系统 */
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        /* ============================================
+           基础样式与排版系统
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--background);
-            color: var(--foreground);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-deep);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        .scrollbar-custom::-webkit-scrollbar {
+        /* 精致衬线字体用于标题 */
+        h1, h2, h3, h4 {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        /* ============================================
+           高级滚动条样式
+           ============================================ */
+        ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
 
-        .scrollbar-custom::-webkit-scrollbar-track {
-            background: #18181b;
+        ::-webkit-scrollbar-track {
+            background: var(--bg-base);
         }
 
-        .scrollbar-custom::-webkit-scrollbar-thumb {
-            background: #3f3f46;
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--gradient-mid), var(--gradient-end));
             border-radius: 4px;
         }
 
-        .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-            background: #52525b;
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, var(--gradient-start), var(--gradient-mid));
         }
 
-        .artwork-card {
-            transition: transform 0.3s ease;
+        /* ============================================
+           动态背景系统 - 粒子与光效
+           ============================================ */
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
         }
 
-        .artwork-card:hover {
-            transform: translateY(-4px);
+        .gradient-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s ease-in-out infinite;
         }
 
-        .image-overlay {
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--glow-primary) 0%, transparent 70%);
+            top: -200px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, var(--glow-secondary) 0%, transparent 70%);
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -7s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--glow-accent) 0%, transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -14s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 10px) scale(1.02); }
+        }
+
+        /* 网格纹理背景 */
+        .grid-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.5;
+        }
+
+        /* ============================================
+           毛玻璃与发光效果
+           ============================================ */
+        .glass {
+            background: rgba(22, 22, 29, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-light);
+        }
+
+        .glass-strong {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .glow-border {
+            position: relative;
+        }
+
+        .glow-border::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             opacity: 0;
             transition: opacity 0.3s ease;
         }
 
-        .artwork-card:hover .image-overlay {
+        .glow-border:hover::before {
             opacity: 1;
         }
 
-        .parameter-grid {
+        /* ============================================
+           现代化导航栏设计
+           ============================================ */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 2rem;
+        }
+
+        .nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.02);
+        }
+
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-glow);
+            animation: logoGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { box-shadow: 0 0 20px var(--glow-primary); }
+            50% { box-shadow: 0 0 40px var(--glow-secondary); }
+        }
+
+        .logo-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary), var(--text-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* 搜索框设计 */
+        .search-container {
+            flex: 1;
+            max-width: 480px;
+            margin: 0 3rem;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px 20px 12px 48px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: var(--gradient-mid);
+            box-shadow: 0 0 0 3px var(--glow-primary), var(--shadow-md);
+            background: var(--bg-card-hover);
+        }
+
+        .search-box::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .search-box:focus + .search-icon {
+            color: var(--gradient-mid);
+        }
+
+        /* 导航链接 */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-radius: var(--radius-md);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: inherit;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::before {
+            opacity: 0.1;
+        }
+
+        .nav-link.active {
+            color: var(--text-primary);
+        }
+
+        .nav-link.active::before {
+            opacity: 0.15;
+        }
+
+        /* ============================================
+           英雄区域 - 沉浸式开场
+           ============================================ */
+        .hero-section {
+            position: relative;
+            padding: 160px 2rem 80px;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .hero-title-gradient {
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-accent) 50%, var(--gradient-end) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 50px var(--glow-primary);
+        }
+
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            background: var(--bg-card);
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 1rem;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--gradient-mid);
+        }
+
+        /* ============================================
+           作品网格 - 瀑布流现代布局
+           ============================================ */
+        .gallery-section {
+            position: relative;
+            z-index: 10;
+            padding: 2rem 2rem 6rem;
+        }
+
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .gallery-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 3rem;
+            padding: 0 1rem;
+        }
+
+        .gallery-title {
+            font-size: 1.75rem;
+            color: var(--text-primary);
+        }
+
+        .gallery-stats {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 作品卡片 - 现代化设计 */
+        .artwork-card {
+            position: relative;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: cardReveal 0.6s ease forwards;
+        }
+
+        .artwork-card:nth-child(1) { animation-delay: 0.1s; }
+        .artwork-card:nth-child(2) { animation-delay: 0.2s; }
+        .artwork-card:nth-child(3) { animation-delay: 0.3s; }
+        .artwork-card:nth-child(4) { animation-delay: 0.4s; }
+        .artwork-card:nth-child(5) { animation-delay: 0.5s; }
+        .artwork-card:nth-child(6) { animation-delay: 0.6s; }
+        .artwork-card:nth-child(7) { animation-delay: 0.7s; }
+        .artwork-card:nth-child(8) { animation-delay: 0.8s; }
+
+        @keyframes cardReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-lg), 0 0 60px var(--glow-primary);
+        }
+
+        .artwork-image-wrapper {
+            position: relative;
+            aspect-ratio: 3/4;
+            overflow: hidden;
+        }
+
+        .artwork-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .artwork-card:hover .artwork-image {
+            transform: scale(1.08);
+        }
+
+        /* 图片上的渐变遮罩 */
+        .artwork-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                transparent 0%,
+                transparent 40%,
+                rgba(3, 7, 18, 0.6) 70%,
+                rgba(3, 7, 18, 0.95) 100%
+            );
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .artwork-card:hover .artwork-overlay {
+            opacity: 1;
+        }
+
+        /* 卡片上的信息 */
+        .artwork-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .artwork-card:hover .artwork-info {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .artwork-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .artwork-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .artwork-model {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(139, 92, 246, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            color: var(--text-accent);
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        /* 卡片底部信息 */
+        .artwork-footer {
+            padding: 1.25rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .artwork-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .artwork-tag {
+            padding: 4px 12px;
+            background: var(--bg-elevated);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .artwork-card:hover .artwork-tag {
+            background: var(--bg-card-hover);
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           详情页 - 沉浸式画廊体验
+           ============================================ */
+        .detail-container {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: var(--bg-deep);
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .detail-container.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .detail-nav {
+            position: sticky;
+            top: 0;
+            z-index: 210;
+            padding: 1rem 2rem;
+            background: rgba(3, 7, 18, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .detail-nav-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--gradient-mid);
+        }
+
+        .detail-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            max-width: 500px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .detail-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text-primary);
+            border-color: var(--gradient-mid);
+        }
+
+        /* 详情内容 */
+        .detail-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .detail-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 图片展示区 */
+        .detail-image-section {
+            position: relative;
+        }
+
+        .detail-image-wrapper {
+            position: relative;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .detail-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-zoom-hint {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .detail-image-wrapper:hover .image-zoom-hint {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 作品描述 */
+        .detail-description {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .detail-description h3 {
+            font-size: 1.125rem;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-description p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        /* 参数面板 */
+        .parameter-panel {
+            position: sticky;
+            top: 100px;
+        }
+
+        .parameter-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+        }
+
+        .parameter-section {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .parameter-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: var(--radius-sm);
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        /* 参数网格 */
+        .param-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 0.75rem;
         }
 
+        .param-item {
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-subtle);
+            transition: all 0.3s ease;
+        }
+
+        .param-item:hover {
+            border-color: var(--border-light);
+            background: var(--bg-card-hover);
+        }
+
+        .param-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .param-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* 提示词区域 */
+        .prompt-box {
+            background: var(--bg-elevated);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            max-height: 150px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .prompt-text {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            word-break: break-word;
+        }
+
+        .prompt-label {
+            position: absolute;
+            top: -10px;
+            left: 12px;
+            padding: 2px 8px;
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        /* 标签展示 */
+        .tags-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-item {
+            padding: 6px 14px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--text-accent);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .tag-item:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(139, 92, 246, 0.2));
+            transform: translateY(-2px);
+        }
+
+        /* ============================================
+           页脚 - 现代简约设计
+           ============================================ */
+        .footer {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 2rem;
+            background: linear-gradient(180deg, transparent, rgba(3, 7, 18, 0.8));
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .footer-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--text-primary);
+        }
+
+        .footer-divider {
+            width: 1px;
+            height: 16px;
+            background: var(--border-light);
+        }
+
+        .footer-copyright {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* ============================================
+           动画系统
+           ============================================ */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ============================================
+           响应式设计
+           ============================================ */
         @media (max-width: 768px) {
-            .parameter-grid {
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-inner {
+                height: 64px;
+            }
+
+            .search-container {
+                display: none;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero-section {
+                padding: 120px 1rem 60px;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-description {
+                font-size: 1rem;
+            }
+
+            .gallery-section {
+                padding: 1rem;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+                gap: 1rem;
+            }
+
+            .detail-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .parameter-panel {
+                position: static;
+            }
+
+            .param-grid {
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ============================================
+           辅助类
+           ============================================ */
+        .hidden {
+            display: none !important;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
     </style>
 </head>
-<body class="min-h-screen scrollbar-custom">
-    <!-- Header -->
-    <header class="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-2" onclick="showHome()">
-                <i class="fas fa-palette text-indigo-500 text-2xl"></i>
-                <span class="text-xl font-bold text-white">AI Gallery</span>
+<body>
+    <!-- 动态背景 -->
+    <div class="dynamic-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="grid-pattern"></div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="nav-container">
+        <div class="nav-inner glass-strong">
+            <a href="#" class="nav-logo" onclick="showHome(); return false;">
+                <div class="logo-icon">
+                    <i class="fas fa-robot text-white text-xl"></i>
+                </div>
+                <span class="logo-text">AI Gallery</span>
             </a>
-            <div class="flex-1 max-w-md mx-8">
-                <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"></i>
-                    <input type="text" placeholder="搜索作品..." 
-                        class="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                </div>
-            </div>
-            <nav class="hidden sm:flex items-center gap-6">
-                <a href="#" class="text-zinc-300 hover:text-white transition-colors" onclick="showHome()">首页</a>
-                <a href="#" class="text-zinc-300 hover:text-white transition-colors">分类</a>
-            </nav>
-        </div>
-    </header>
 
-    <!-- Main Content -->
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="搜索艺术作品、风格、模型...">
+                <i class="fas fa-search search-icon"></i>
+            </div>
+
+            <div class="nav-links">
+                <a href="#" class="nav-link active" onclick="showHome(); return false;">
+                    <i class="fas fa-th-large mr-2"></i>作品
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-layer-group mr-2"></i>分类
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-fire mr-2"></i>热门
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容 -->
     <main id="main-content">
-        <!-- Hero Section -->
-        <section class="py-12 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-7xl mx-auto text-center">
-                <h1 class="text-4xl sm:text-5xl font-bold text-white mb-4">
-                    AI 绘画作品展示
+        <!-- 英雄区域 -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <div class="hero-badge">
+                    <span class="hero-badge-dot"></span>
+                    <span>探索 AI 艺术的无限可能</span>
+                </div>
+                
+                <h1 class="hero-title">
+                    <span class="hero-title-gradient">数字画廊</span>
+                    <br>
+                    <span class="text-white">灵感与创意的交汇点</span>
                 </h1>
-                <p class="text-zinc-400 text-lg max-w-2xl mx-auto">
-                    探索精选AI艺术作品，获取生成参数与灵感
+                
+                <p class="hero-description">
+                    在这里，每一幅作品都是人类想象力与人工智能的完美融合。探索精选的 AI 艺术杰作，获取详细的生成参数，为你的创作注入新的灵感。
                 </p>
+                
+                <div class="hero-actions">
+                    <button class="btn-primary" onclick="scrollToGallery()">
+                        <i class="fas fa-compass"></i>
+                        开始探索
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-play-circle"></i>
+                        观看演示
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- Artwork Grid -->
-        <section class="px-4 sm:px-6 lg:px-8 pb-16">
-            <div class="max-w-7xl mx-auto">
-                <div id="artwork-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                    <!-- Artworks will be loaded here -->
+        <!-- 画廊区域 -->
+        <section id="gallery" class="gallery-section">
+            <div class="gallery-container">
+                <div class="gallery-header">
+                    <h2 class="gallery-title">
+                        <i class="fas fa-images mr-3 text-indigo-400"></i>
+                        精选作品
+                    </h2>
+                    <div class="gallery-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-palette"></i>
+                            <span id="artwork-count">6 件作品</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-layer-group"></i>
+                            <span>多 种风格</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="artwork-grid" class="gallery-grid">
+                    <!-- 作品将通过 JavaScript 渲染 -->
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Detail View (Hidden by default) -->
-    <main id="detail-content" class="hidden">
-        <!-- Navigation -->
-        <div class="sticky top-0 z-50 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
-                <button onclick="showHome()" class="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+    <!-- 详情页 -->
+    <div id="detail-content" class="detail-container">
+        <nav class="detail-nav">
+            <div class="detail-nav-inner">
+                <button class="back-btn" onclick="showHome()">
                     <i class="fas fa-arrow-left"></i>
-                    <span>返回</span>
+                    返回画廊
                 </button>
-                <h1 id="detail-title" class="ml-4 text-white font-semibold truncate"></h1>
+                
+                <h1 id="detail-title" class="detail-title"></h1>
+                
+                <div class="detail-actions">
+                    <button class="action-btn" title="收藏">
+                        <i class="far fa-heart"></i>
+                    </button>
+                    <button class="action-btn" title="分享">
+                        <i class="fas fa-share-alt"></i>
+                    </button>
+                    <button class="action-btn" title="下载">
+                        <i class="fas fa-download"></i>
+                    </button>
+                </div>
             </div>
-        </div>
+        </nav>
 
-        <!-- Detail Content -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Image Display -->
-                <div class="lg:col-span-2">
-                    <div class="relative rounded-lg overflow-hidden bg-zinc-900">
-                        <img id="detail-image" src="" alt="" class="w-full h-auto">
-                    </div>
-                    <div id="detail-description" class="mt-6 hidden">
-                        <h2 class="text-white font-semibold mb-2">作品描述</h2>
-                        <p class="text-zinc-400"></p>
+        <div class="detail-content">
+            <!-- 图片展示 -->
+            <div class="detail-image-section">
+                <div class="detail-image-wrapper">
+                    <img id="detail-image" src="" alt="" class="detail-image">
+                    <div class="image-zoom-hint">
+                        <i class="fas fa-search-plus"></i>
+                        点击放大查看
                     </div>
                 </div>
 
-                <!-- Parameter Panel -->
-                <div class="lg:col-span-1">
-                    <div class="bg-zinc-800 rounded-lg p-6 space-y-6">
-                        <div>
-                            <h3 class="text-lg font-semibold text-white mb-4">生成参数</h3>
-                            <div id="parameter-grid" class="parameter-grid">
-                                <!-- Parameters will be loaded here -->
-                            </div>
-                        </div>
+                <div id="detail-description" class="detail-description hidden">
+                    <h3>
+                        <i class="fas fa-info-circle text-indigo-400"></i>
+                        作品描述
+                    </h3>
+                    <p></p>
+                </div>
+            </div>
 
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="text-white font-medium">正向提示词</h4>
-                                <button onclick="copyText('positive-prompt')" class="p-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 transition-colors">
-                                    <i class="fas fa-copy text-zinc-400"></i>
-                                </button>
-                            </div>
-                            <div class="bg-zinc-900 rounded-lg p-3 max-h-40 overflow-y-auto">
-                                <p id="positive-prompt" class="text-zinc-300 text-sm leading-relaxed"></p>
-                            </div>
+            <!-- 参数面板 -->
+            <aside class="parameter-panel">
+                <div class="parameter-card">
+                    <!-- 生成参数 -->
+                    <div class="parameter-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span class="section-icon">
+                                    <i class="fas fa-cog"></i>
+                                </span>
+                                生成参数
+                            </h3>
                         </div>
-
-                        <div id="negative-prompt-section">
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="text-white font-medium">反向提示词</h4>
-                                <button onclick="copyText('negative-prompt')" class="p-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 transition-colors">
-                                    <i class="fas fa-copy text-zinc-400"></i>
-                                </button>
-                            </div>
-                            <div class="bg-zinc-900 rounded-lg p-3 max-h-32 overflow-y-auto">
-                                <p id="negative-prompt" class="text-zinc-400 text-sm leading-relaxed"></p>
-                            </div>
+                        <div id="parameter-grid" class="param-grid">
+                            <!-- 参数将通过 JavaScript 渲染 -->
                         </div>
+                    </div>
 
-                        <div>
-                            <h4 class="text-white font-medium mb-3">标签</h4>
-                            <div id="tags-container" class="flex flex-wrap gap-2">
-                                <!-- Tags will be loaded here -->
-                            </div>
+                    <!-- 正向提示词 -->
+                    <div class="parameter-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span class="section-icon" style="background: linear-gradient(135deg, #10b981, #059669);">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                正向提示词
+                            </h3>
+                            <button class="action-btn" onclick="copyText('positive-prompt')" title="复制">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="prompt-box">
+                            <p id="positive-prompt" class="prompt-text"></p>
+                        </div>
+                    </div>
+
+                    <!-- 反向提示词 -->
+                    <div id="negative-prompt-section" class="parameter-section hidden">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span class="section-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">
+                                    <i class="fas fa-minus"></i>
+                                </span>
+                                反向提示词
+                            </h3>
+                            <button class="action-btn" onclick="copyText('negative-prompt')" title="复制">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="prompt-box">
+                            <p id="negative-prompt" class="prompt-text" style="color: var(--text-muted);"></p>
+                        </div>
+                    </div>
+
+                    <!-- 标签 -->
+                    <div class="parameter-section">
+                        <div class="section-header">
+                            <h3 class="section-title">
+                                <span class="section-icon" style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                    <i class="fas fa-tag"></i>
+                                </span>
+                                标签
+                            </h3>
+                        </div>
+                        <div id="tags-container" class="tags-container">
+                            <!-- 标签将通过 JavaScript 渲染 -->
                         </div>
                     </div>
                 </div>
-            </div>
+            </aside>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="bg-zinc-950 border-t border-zinc-800 py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p class="text-zinc-400 text-sm">AI Gallery - AI绘画作品展示平台</p>
-                <p class="text-zinc-500 text-sm">探索AI艺术的无限可能</p>
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <div class="logo-icon" style="width: 36px; height: 36px;">
+                    <i class="fas fa-robot text-white text-lg"></i>
+                </div>
+                <span class="footer-text">AI Gallery</span>
             </div>
+            
+            <div class="footer-links">
+                <a href="#" class="footer-link">关于我们</a>
+                <div class="footer-divider"></div>
+                <a href="#" class="footer-link">使用条款</a>
+                <div class="footer-divider"></div>
+                <a href="#" class="footer-link">隐私政策</a>
+                <div class="footer-divider"></div>
+                <a href="#" class="footer-link">联系我们</a>
+            </div>
+            
+            <p class="footer-copyright">
+                © 2024 AI Gallery. 探索 AI 艺术的无限可能
+            </p>
         </div>
     </footer>
 
     <script>
-        // Sample data
+        // 作品数据
         const artworks = [
             {
                 id: "1",
                 title: "赛博朋克城市夜景",
-                description: "未来城市的霓虹灯光，rain-soaked streets reflecting neon signs",
-                imageUrl: "https://images.unsplash.com/photo-1515630278258-407f66498911?w=800&h=600&fit=crop",
-                thumbnailUrl: "https://images.unsplash.com/photo-1515630278258-407f66498911?w=400&h=300&fit=crop",
+                description: "未来城市的霓虹灯光，rain-soaked streets reflecting neon signs。在这座不夜城中，高楼林立，霓虹闪烁，飞车穿梭其间，展现了人类对未来都市的无限想象。",
+                imageUrl: "https://images.unsplash.com/photo-1515630278258-407f66498911?w=1200&h=900&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1515630278258-407f66498911?w=600&h=800&fit=crop",
                 parameters: {
                     model: "SDXL 1.0",
                     sampler: "DPM++ 2M Karras",
@@ -236,9 +1433,9 @@
             {
                 id: "2",
                 title: "梦幻森林精灵",
-                description: "居住在古老森林中的神秘精灵，surrounded by glowing fireflies",
-                imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&h=600&fit=crop",
-                thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&h=300&fit=crop",
+                description: "居住在古老森林中的神秘精灵，surrounded by glowing fireflies。银发如瀑，光芒流转，精灵族的优雅与神秘在这一刻展现得淋漓尽致。",
+                imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=1200&h=900&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=800&fit=crop",
                 parameters: {
                     model: "Midjourney v6",
                     sampler: "Euler a",
@@ -257,9 +1454,9 @@
             {
                 id: "3",
                 title: "蒸汽朋克机械龙",
-                description: "由齿轮和蒸汽驱动的机械巨龙",
-                imageUrl: "https://images.unsplash.com/photo-1577493340887-b7bfff550145?w=800&h=600&fit=crop",
-                thumbnailUrl: "https://images.unsplash.com/photo-1577493340887-b7bfff550145?w=400&h=300&fit=crop",
+                description: "由齿轮和蒸汽驱动的机械巨龙。铜皮铁骨，蒸汽缭绕，维多利亚时代的工业美学与东方神龙的完美结合。",
+                imageUrl: "https://images.unsplash.com/photo-1577493340887-b7bfff550145?w=1200&h=900&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1577493340887-b7bfff550145?w=600&h=800&fit=crop",
                 parameters: {
                     model: "SDXL 1.0",
                     sampler: "DPM++ SDE Karras",
@@ -278,9 +1475,9 @@
             {
                 id: "4",
                 title: "水墨山水意境",
-                description: "传统中国水墨画风格的山水风景",
-                imageUrl: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=800&h=400&fit=crop",
-                thumbnailUrl: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=400&h=200&fit=crop",
+                description: "传统中国水墨画风格的山水风景。浓淡干湿，笔走龙蛇，宋韵山水尽显东方美学之精髓。",
+                imageUrl: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=1200&h=600&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?w=600&h=400&fit=crop",
                 parameters: {
                     model: "Stable Diffusion 1.5",
                     sampler: "Euler a",
@@ -299,9 +1496,9 @@
             {
                 id: "5",
                 title: "未来机甲战士",
-                description: "身穿高科技装甲的未来战士",
-                imageUrl: "https://images.unsplash.com/photo-1614726365723-49cfae927846?w=800&h=600&fit=crop",
-                thumbnailUrl: "https://images.unsplash.com/photo-1614726365723-49cfae927846?w=400&h=300&fit=crop",
+                description: "身穿高科技装甲的未来战士。在硝烟弥漫的战场上，机械与人类融为一体，为了守护而战。",
+                imageUrl: "https://images.unsplash.com/photo-1614726365723-49cfae927846?w=1200&h=900&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1614726365723-49cfae927846?w=600&h=800&fit=crop",
                 parameters: {
                     model: "SDXL 1.0",
                     sampler: "DPM++ 2M Karras",
@@ -320,9 +1517,9 @@
             {
                 id: "6",
                 title: "印象派花园",
-                description: "莫奈风格的花园景色，光影斑驳",
-                imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa2f44c946?w=800&h=600&fit=crop",
-                thumbnailUrl: "https://images.unsplash.com/photo-1490750967868-88aa2f44c946?w=400&h=300&fit=crop",
+                description: "莫奈风格的花园景色，光影斑驳。睡莲静卧，拱桥横跨，印象派的光影魔法在此绽放。",
+                imageUrl: "https://images.unsplash.com/photo-1490750967868-88aa2f44c946?w=1200&h=900&fit=crop",
+                thumbnailUrl: "https://images.unsplash.com/photo-1490750967868-88aa2f44c946?w=600&h=800&fit=crop",
                 parameters: {
                     model: "Midjourney v6",
                     sampler: "DPM++ 2M",
@@ -340,119 +1537,156 @@
             }
         ];
 
-        // Render artwork grid
+        // 渲染作品网格
         function renderArtworkGrid() {
             const grid = document.getElementById('artwork-grid');
             grid.innerHTML = artworks.map((artwork, index) => `
-                <div class="artwork-card cursor-pointer" onclick="showDetail('${artwork.id}')" style="animation: fadeInUp 0.5s ease ${index * 0.1}s both;">
-                    <div class="relative overflow-hidden rounded-lg bg-zinc-800 aspect-[3/4]">
-                        <img src="${artwork.thumbnailUrl}" alt="${artwork.title}" 
-                            class="w-full h-full object-cover transition-transform duration-300 hover:scale-105">
-                        <div class="image-overlay absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
-                            <div class="absolute bottom-0 left-0 right-0 p-4">
-                                <h3 class="text-white font-semibold truncate">${artwork.title}</h3>
-                                <p class="text-zinc-300 text-sm mt-1">${artwork.parameters.model}</p>
+                <article class="artwork-card" onclick="showDetail('${artwork.id}')" role="button" tabindex="0">
+                    <div class="artwork-image-wrapper">
+                        <img src="${artwork.thumbnailUrl}" alt="${artwork.title}" class="artwork-image" loading="lazy">
+                        <div class="artwork-overlay"></div>
+                        <div class="artwork-info">
+                            <h3 class="artwork-title">${artwork.title}</h3>
+                            <div class="artwork-meta">
+                                <span class="artwork-model">
+                                    <i class="fas fa-microchip"></i>
+                                    ${artwork.parameters.model}
+                                </span>
+                                <span>
+                                    <i class="fas fa-ruler-combined mr-1"></i>
+                                    ${artwork.parameters.width}×${artwork.parameters.height}
+                                </span>
                             </div>
                         </div>
                     </div>
-                </div>
+                    <div class="artwork-footer">
+                        <div class="artwork-tags">
+                            ${artwork.tags.slice(0, 3).map(tag => `<span class="artwork-tag">#${tag}</span>`).join('')}
+                            ${artwork.tags.length > 3 ? `<span class="artwork-tag">+${artwork.tags.length - 3}</span>` : ''}
+                        </div>
+                    </div>
+                </article>
             `).join('');
+
+            // 更新作品数量
+            document.getElementById('artwork-count').textContent = `${artworks.length} 件作品`;
         }
 
-        // Show detail view
+        // 显示详情页
         function showDetail(id) {
             const artwork = artworks.find(a => a.id === id);
             if (!artwork) return;
 
+            // 隐藏主内容，显示详情
             document.getElementById('main-content').classList.add('hidden');
-            document.getElementById('detail-content').classList.remove('hidden');
+            document.getElementById('detail-content').classList.add('active');
 
+            // 设置标题
             document.getElementById('detail-title').textContent = artwork.title;
+
+            // 设置图片
             document.getElementById('detail-image').src = artwork.imageUrl;
             document.getElementById('detail-image').alt = artwork.title;
 
+            // 设置描述
+            const descSection = document.getElementById('detail-description');
             if (artwork.description) {
-                const descSection = document.getElementById('detail-description');
                 descSection.classList.remove('hidden');
                 descSection.querySelector('p').textContent = artwork.description;
+            } else {
+                descSection.classList.add('hidden');
             }
 
-            // Render parameters
+            // 渲染参数
             const paramItems = [
-                { label: '模型', value: artwork.parameters.model },
-                { label: '采样器', value: artwork.parameters.sampler || '-' },
-                { label: '步数', value: artwork.parameters.steps.toString() },
-                { label: 'CFG Scale', value: artwork.parameters.cfgScale.toString() },
-                { label: '种子', value: artwork.parameters.seed.toString() },
-                { label: '尺寸', value: `${artwork.parameters.width} x ${artwork.parameters.height}` },
+                { label: '模型', value: artwork.parameters.model, icon: 'microchip' },
+                { label: '采样器', value: artwork.parameters.sampler || '-', icon: 'wave-square' },
+                { label: '步数', value: artwork.parameters.steps.toString(), icon: 'steps' },
+                { label: 'CFG Scale', value: artwork.parameters.cfgScale.toString(), icon: 'sliders-h' },
+                { label: '种子', value: artwork.parameters.seed.toString(), icon: 'seedling' },
+                { label: '尺寸', value: `${artwork.parameters.width} × ${artwork.parameters.height}`, icon: 'expand' },
             ];
 
             document.getElementById('parameter-grid').innerHTML = paramItems.map(item => `
-                <div class="bg-zinc-700/50 rounded-lg p-3">
-                    <span class="text-zinc-400 text-sm">${item.label}</span>
-                    <p class="text-white font-medium mt-1">${item.value}</p>
+                <div class="param-item">
+                    <div class="param-label">${item.label}</div>
+                    <div class="param-value">${item.value}</div>
                 </div>
             `).join('');
 
+            // 设置提示词
             document.getElementById('positive-prompt').textContent = artwork.parameters.positivePrompt;
             
+            const negSection = document.getElementById('negative-prompt-section');
             if (artwork.parameters.negativePrompt) {
+                negSection.classList.remove('hidden');
                 document.getElementById('negative-prompt').textContent = artwork.parameters.negativePrompt;
-                document.getElementById('negative-prompt-section').classList.remove('hidden');
             } else {
-                document.getElementById('negative-prompt-section').classList.add('hidden');
+                negSection.classList.add('hidden');
             }
 
+            // 渲染标签
             document.getElementById('tags-container').innerHTML = artwork.tags.map(tag => `
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-zinc-700 text-zinc-300 hover:bg-zinc-600 transition-colors cursor-pointer">
-                    #${tag}
-                </span>
+                <span class="tag-item">#${tag}</span>
             `).join('');
 
+            // 滚动到顶部
+            document.getElementById('detail-content').scrollTop = 0;
             window.scrollTo(0, 0);
+
+            // 阻止背景滚动
+            document.body.style.overflow = 'hidden';
         }
 
-        // Show home view
+        // 返回首页
         function showHome() {
-            document.getElementById('detail-content').classList.add('hidden');
+            document.getElementById('detail-content').classList.remove('active');
             document.getElementById('main-content').classList.remove('hidden');
-            window.scrollTo(0, 0);
+            
+            // 恢复滚动
+            document.body.style.overflow = '';
+            
+            // 滚动到画廊
+            setTimeout(() => {
+                document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
         }
 
-        // Copy text function
+        // 复制文本
         function copyText(elementId) {
             const text = document.getElementById(elementId).textContent;
             navigator.clipboard.writeText(text).then(() => {
-                // Show feedback
+                // 显示复制成功反馈
                 const button = event.target.closest('button');
                 const icon = button.querySelector('i');
-                icon.className = 'fas fa-check text-green-400';
+                icon.className = 'fas fa-check';
+                button.style.color = '#10b981';
+                
                 setTimeout(() => {
-                    icon.className = 'fas fa-copy text-zinc-400';
+                    icon.className = 'fas fa-copy';
+                    button.style.color = '';
                 }, 2000);
             }).catch(err => {
                 console.error('复制失败:', err);
             });
         }
 
-        // Add CSS animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes fadeInUp {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-        `;
-        document.head.appendChild(style);
+        // 滚动到画廊
+        function scrollToGallery() {
+            document.getElementById('gallery').scrollIntoView({ behavior: 'smooth' });
+        }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', renderArtworkGrid);
+        // 键盘导航支持
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && document.getElementById('detail-content').classList.contains('active')) {
+                showHome();
+            }
+        });
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            renderArtworkGrid();
+        });
     </script>
 </body>
 </html>

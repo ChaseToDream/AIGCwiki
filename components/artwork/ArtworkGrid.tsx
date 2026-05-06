@@ -2,8 +2,8 @@
 
 import { Artwork } from '@/types';
 import { ArtworkCard } from './ArtworkCard';
-import { useState, useEffect } from 'react';
-import { Loader2 } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Loader2, ChevronDown } from 'lucide-react';
 
 interface ArtworkGridProps {
   artworks: Artwork[];
@@ -22,65 +22,67 @@ export function ArtworkGrid({
   const displayedArtworks = artworks.slice(0, displayCount);
   const hasMore = displayCount < artworks.length;
 
-  // 无限滚动
-  useEffect(() => {
-    const handleScroll = () => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 1000
-      ) {
-        if (hasMore && !isLoading) {
-          loadMore();
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [hasMore, isLoading, displayCount]);
-
-  const loadMore = () => {
+  const loadMore = useCallback(() => {
+    if (isLoading || !hasMore) return;
     setIsLoading(true);
-    // 模拟加载延迟
     setTimeout(() => {
       setDisplayCount((prev) =>
         Math.min(prev + loadMoreCount, artworks.length)
       );
       setIsLoading(false);
-    }, 300);
-  };
+    }, 400);
+  }, [isLoading, hasMore, loadMoreCount, artworks.length]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 800
+      ) {
+        loadMore();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [loadMore]);
 
   if (artworks.length === 0) {
     return (
-      <div className="text-center py-16">
-        <p className="text-zinc-400 text-lg">暂无作品</p>
+      <div className="text-center py-24">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-zinc-800/50 border border-zinc-700/50 mb-4">
+          <Loader2 className="w-8 h-8 text-zinc-500" />
+        </div>
+        <p className="text-zinc-500 text-lg">暂无作品</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {displayedArtworks.map((artwork, index) => (
-          <ArtworkCard key={artwork.id} artwork={artwork} index={index % 4} />
+          <ArtworkCard key={artwork.id} artwork={artwork} index={index} />
         ))}
       </div>
 
-      {/* 加载状态 */}
       {isLoading && (
-        <div className="flex justify-center py-8">
-          <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
+        <div className="flex justify-center py-10">
+          <div className="flex items-center gap-3 px-6 py-3 rounded-xl bg-zinc-900/80 border border-zinc-800/50">
+            <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
+            <span className="text-zinc-400 text-sm">加载中...</span>
+          </div>
         </div>
       )}
 
-      {/* 加载更多按钮（备用） */}
       {hasMore && !isLoading && (
         <div className="flex justify-center py-8">
           <button
             onClick={loadMore}
-            className="px-6 py-3 bg-zinc-800 hover:bg-zinc-700 text-white rounded-lg transition-colors"
+            className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-zinc-900/80 border border-zinc-800/50 text-zinc-400 hover:text-cyan-300 hover:border-cyan-500/30 hover:bg-zinc-800/80 transition-all duration-300"
           >
-            加载更多
+            <span className="text-sm font-medium">加载更多</span>
+            <ChevronDown className="w-4 h-4 transition-transform duration-300 group-hover:translate-y-0.5" />
           </button>
         </div>
       )}
