@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Sora, Noto_Sans_SC, JetBrains_Mono } from 'next/font/google';
+import { FilterProvider } from '@/components/providers/FilterProvider';
 import './globals.css';
 
 const sora = Sora({
@@ -40,7 +41,9 @@ export default function RootLayout({
       lang="zh-CN"
       className={`${sora.variable} ${notoSansSC.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="antialiased noise-bg">{children}</body>
+      <body className="antialiased noise-bg">
+        <FilterProvider>{children}</FilterProvider>
+      </body>
     </html>
   );
 }

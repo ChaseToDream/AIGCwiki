@@ -1,10 +1,8 @@
 import artworksData from '@/data/artworks.json';
-import { Artwork, ArtworkParameters } from '@/types';
+import { Artwork } from '@/types';
 
 export type ArtworkInput = Omit<Artwork, 'id' | 'createdAt' | 'updatedAt'>;
 export type ArtworkUpdate = Partial<ArtworkInput>;
-
-const DATA_PATH = 'data/artworks.json';
 
 let cachedArtworks: Artwork[] | null = null;
 
@@ -44,7 +42,12 @@ export function searchArtworks(query: string): Artwork[] {
   return getStore().filter(
     (a) =>
       a.title.toLowerCase().includes(q) ||
-      a.tags.some((t) => t.toLowerCase().includes(q))
+      a.tags.some((t) => t.toLowerCase().includes(q)) ||
+      a.description?.toLowerCase().includes(q) ||
+      a.style.some((s) => s.toLowerCase().includes(q)) ||
+      a.subject.some((s) => s.toLowerCase().includes(q)) ||
+      a.parameters.model.toLowerCase().includes(q) ||
+      a.parameters.positivePrompt.toLowerCase().includes(q)
   );
 }
 
@@ -125,14 +128,6 @@ export function updateArtwork(
       ? { ...a, ...updates, updatedAt: new Date().toISOString() }
       : a
   );
-}
-
-export async function saveArtworks(list: Artwork[]): Promise<void> {
-  const fs = await import('fs/promises');
-  const path = await import('path');
-  const filePath = path.resolve(process.cwd(), DATA_PATH);
-  await fs.writeFile(filePath, JSON.stringify({ artworks: list }, null, 2), 'utf-8');
-  cachedArtworks = list;
 }
 
 export function getImagePath(slug: string): string {

@@ -7,9 +7,11 @@ import { Tag } from '@/components/common/Tag';
 interface ParameterPanelProps {
   parameters: ArtworkParameters;
   tags: string[];
+  style: string[];
+  subject: string[];
 }
 
-export function ParameterPanel({ parameters, tags }: ParameterPanelProps) {
+export function ParameterPanel({ parameters, tags, style, subject }: ParameterPanelProps) {
   const paramItems = [
     { label: '模型', value: parameters.model },
     { label: '采样器', value: parameters.sampler || '-' },
@@ -77,17 +79,47 @@ export function ParameterPanel({ parameters, tags }: ParameterPanelProps) {
         )}
       </div>
 
-      <div className="glass rounded-2xl p-6">
-        <h4 className="text-white text-sm font-medium mb-4 flex items-center gap-2">
-          <span className="w-1 h-3 rounded-full bg-amber-400/60" />
-          标签
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <Tag key={tag} label={tag} />
-          ))}
+      {style.length > 0 && (
+        <div className="glass rounded-2xl p-6">
+          <h4 className="text-white text-sm font-medium mb-4 flex items-center gap-2">
+            <span className="w-1 h-3 rounded-full bg-amber-400/60" />
+            风格
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {style.map((s) => (
+              <Tag key={s} label={s} variant="amber" filterType="style" />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
+
+      {subject.length > 0 && (
+        <div className="glass rounded-2xl p-6">
+          <h4 className="text-white text-sm font-medium mb-4 flex items-center gap-2">
+            <span className="w-1 h-3 rounded-full bg-cyan-400/60" />
+            题材
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {subject.map((s) => (
+              <Tag key={s} label={s} variant="cyan" filterType="subject" />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {tags.length > 0 && (
+        <div className="glass rounded-2xl p-6">
+          <h4 className="text-white text-sm font-medium mb-4 flex items-center gap-2">
+            <span className="w-1 h-3 rounded-full bg-amber-400/60" />
+            标签
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {tags.map((tag) => (
+              <Tag key={tag} label={tag} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

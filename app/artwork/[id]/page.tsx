@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { ArrowLeft, ImageIcon } from 'lucide-react';
 import { ParameterPanel } from '@/components/artwork/ParameterPanel';
 import { RelatedArtworks } from '@/components/artwork/RelatedArtworks';
+import { Lightbox } from '@/components/artwork/Lightbox';
 import { getArtworkById, getRelatedArtworks, getAllArtworks } from '@/lib/data';
 import { notFound } from 'next/navigation';
 
@@ -45,17 +46,12 @@ export default function ArtworkPage({ params }: ArtworkPageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
           <div className="lg:col-span-2 space-y-8">
-            <div className="relative rounded-2xl overflow-hidden bg-zinc-900 border border-zinc-800/60 group">
-              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-amber-500/5 pointer-events-none" />
-              <Image
-                src={artwork.imageUrl}
-                alt={artwork.title}
-                width={artwork.parameters.width}
-                height={artwork.parameters.height}
-                className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
-                priority
-              />
-            </div>
+            <Lightbox
+              src={artwork.imageUrl}
+              alt={artwork.title}
+              width={artwork.parameters.width}
+              height={artwork.parameters.height}
+            />
 
             {artwork.description && (
               <div className="glass rounded-2xl p-6">
@@ -75,6 +71,8 @@ export default function ArtworkPage({ params }: ArtworkPageProps) {
               <ParameterPanel
                 parameters={artwork.parameters}
                 tags={artwork.tags}
+                style={artwork.style}
+                subject={artwork.subject}
               />
             </div>
           </div>

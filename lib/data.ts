@@ -13,7 +13,6 @@ export {
   addArtwork,
   removeArtwork,
   updateArtwork,
-  saveArtworks,
   getImagePath,
   slugify,
 } from './artworkService';
